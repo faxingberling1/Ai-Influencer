@@ -1,0 +1,2569 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AIE - Ai Entertainment | Create AI Influencers</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #00bfff;
+            --primary-dark: #0099cc;
+            --primary-light: #80dfff;
+            --dark: #121212;
+            --darker: #0a0a0a;
+            --light: #f8f9fa;
+            --gray: #2a2a2a;
+            --gray-light: #3a3a3a;
+            --transition: all 0.3s ease;
+            --transition-slow: all 0.5s ease;
+            --shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            --shadow-hover: 0 10px 25px rgba(0, 191, 255, 0.2);
+            --glass: rgba(18, 18, 18, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--light);
+            line-height: 1.6;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Animated Background */
+        .bg-animation {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+
+        .bg-circle {
+            position: absolute;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 191, 255, 0.1) 0%, rgba(0, 191, 255, 0) 70%);
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .bg-circle:nth-child(1) {
+            width: 300px;
+            height: 300px;
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+
+        .bg-circle:nth-child(2) {
+            width: 400px;
+            height: 400px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 3s;
+        }
+
+        .bg-circle:nth-child(3) {
+            width: 250px;
+            height: 250px;
+            bottom: 10%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+
+        .bg-circle:nth-child(4) {
+            width: 350px;
+            height: 350px;
+            top: 20%;
+            right: 20%;
+            animation-delay: 9s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+            }
+        }
+
+        /* Signature Circle */
+        .signature-circle {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--darker);
+            font-weight: 700;
+            font-size: 1.2rem;
+            z-index: 100;
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.4);
+            animation: rotate 20s linear infinite;
+            overflow: hidden;
+        }
+
+        .signature-circle::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes rotate {
+            0% {
+                transform: rotate(0deg);
+            }
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) translateY(-100%) rotate(45deg);
+            }
+            100% {
+                transform: translateX(100%) translateY(100%) rotate(45deg);
+            }
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        /* Glass Morphism Effect */
+        .glass {
+            background: var(--glass);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-border);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Loading Screen */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: var(--darker);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .loading-logo-icon {
+            color: var(--primary);
+            font-size: 3rem;
+            animation: pulse 2s infinite;
+        }
+
+        .loading-logo-text {
+            font-size: 2.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), #7fffd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .loading-bar {
+            width: 300px;
+            height: 6px;
+            background-color: var(--gray);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .loading-progress {
+            height: 100%;
+            width: 0%;
+            background: linear-gradient(to right, var(--primary), var(--primary-light));
+            border-radius: 3px;
+            transition: width 0.3s ease;
+        }
+
+        .loading-text {
+            margin-top: 15px;
+            color: var(--primary-light);
+            font-size: 0.9rem;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+            100% { transform: scale(1); }
+        }
+
+        /* Header Styles */
+        header {
+            background-color: rgba(10, 10, 10, 0.8);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: var(--shadow);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo-icon {
+            color: var(--primary);
+            font-size: 2rem;
+        }
+
+        .logo-text {
+            font-size: 1.5rem;
+            font-weight: 700;
+            background: linear-gradient(to right, var(--primary), #7fffd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+        }
+
+        nav a {
+            font-weight: 500;
+            transition: var(--transition);
+            padding: 0.5rem 0;
+            position: relative;
+        }
+
+        nav a:hover {
+            color: var(--primary);
+        }
+
+        nav a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary);
+            transition: var(--transition);
+        }
+
+        nav a:hover::after {
+            width: 100%;
+        }
+
+        .cta-button {
+            background-color: var(--primary);
+            color: var(--darker);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--primary);
+        }
+
+        .cta-button:hover {
+            background-color: transparent;
+            color: var(--primary);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .mobile-menu {
+            display: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        /* Logo Ticker */
+        .logo-ticker {
+            background: linear-gradient(90deg, rgba(0, 191, 255, 0.1) 0%, rgba(0, 191, 255, 0.05) 100%);
+            padding: 1.5rem 0;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ticker-container {
+            display: flex;
+            width: max-content;
+            animation: ticker 30s linear infinite;
+        }
+
+        .ticker-item {
+            display: flex;
+            align-items: center;
+            margin: 0 2rem;
+            white-space: nowrap;
+        }
+
+        .ticker-icon {
+            color: var(--primary);
+            font-size: 1.5rem;
+            margin-right: 0.8rem;
+        }
+
+        .ticker-text {
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        @keyframes ticker {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .hero-text {
+            flex: 1;
+            animation: fadeInLeft 1s ease;
+        }
+
+        .hero-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            animation: fadeInRight 1s ease;
+        }
+
+        .hero-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow-hover);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            line-height: 1.2;
+            margin-bottom: 1.5rem;
+        }
+
+        .highlight {
+            color: var(--primary);
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            color: #cccccc;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+
+        .secondary-button {
+            background-color: transparent;
+            color: var(--primary);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            border: 2px solid var(--primary);
+        }
+
+        .secondary-button:hover {
+            background-color: var(--primary);
+            color: var(--darker);
+            transform: translateY(-3px);
+        }
+
+        @keyframes fadeInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes fadeInRight {
+            from {
+                opacity: 0;
+                transform: translateX(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 5rem 0;
+        }
+
+        .section-title {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .section-title h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .section-title p {
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .feature-card {
+            padding: 2rem;
+            border-radius: 15px;
+            transition: var(--transition);
+            opacity: 0;
+            transform: translateY(30px);
+        }
+
+        .feature-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .feature-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #cccccc;
+        }
+
+        /* Enhanced Courses Section */
+        .courses {
+            padding: 6rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .courses .section-title {
+            margin-bottom: 4rem;
+            position: relative;
+        }
+
+        .courses .section-title h2 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            background: linear-gradient(to right, var(--primary), #7fffd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            display: inline-block;
+        }
+
+        .courses .section-title p {
+            color: #cccccc;
+            max-width: 600px;
+            margin: 0 auto;
+            font-size: 1.2rem;
+        }
+
+        .section-decoration {
+            position: absolute;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(0, 191, 255, 0.1) 0%, rgba(0, 191, 255, 0) 70%);
+            top: -50px;
+            right: 10%;
+            z-index: -1;
+        }
+
+        .courses-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .tab-button {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--primary);
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tab-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: var(--transition-slow);
+        }
+
+        .tab-button:hover::before {
+            left: 100%;
+        }
+
+        .tab-button:hover, .tab-button.active {
+            background-color: var(--primary);
+            color: var(--darker);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .courses-container {
+            position: relative;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+
+        .course-card {
+            border-radius: 20px;
+            overflow: hidden;
+            transition: var(--transition);
+            position: relative;
+            opacity: 0;
+            transform: translateY(30px);
+            background: linear-gradient(145deg, rgba(42, 42, 42, 0.9), rgba(10, 10, 10, 0.9));
+            border: 1px solid rgba(0, 191, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .course-card.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .course-card:hover {
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 20px 40px rgba(0, 191, 255, 0.3);
+            border-color: rgba(0, 191, 255, 0.3);
+        }
+
+        .course-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: var(--darker);
+            padding: 0.4rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            z-index: 2;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .course-image {
+            height: 220px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .course-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .course-card:hover .course-image img {
+            transform: scale(1.1);
+        }
+
+        .course-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, transparent 40%, rgba(10, 10, 10, 0.9));
+            display: flex;
+            align-items: flex-end;
+            padding: 1.5rem;
+            opacity: 0;
+            transition: var(--transition);
+        }
+
+        .course-card:hover .course-overlay {
+            opacity: 1;
+        }
+
+        .course-level {
+            background: rgba(0, 0, 0, 0.7);
+            color: var(--primary);
+            padding: 0.3rem 0.8rem;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .course-content {
+            padding: 1.8rem;
+        }
+
+        .course-category {
+            color: var(--primary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-content h3 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .course-content p {
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+        }
+
+        .course-meta {
+            display: flex;
+            justify-content: space-between;
+            color: #aaaaaa;
+            font-size: 0.9rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .course-meta span {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .course-price {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .course-price s {
+            font-size: 1rem;
+            color: #aaaaaa;
+            margin-left: 0.5rem;
+        }
+
+        .course-button {
+            background: linear-gradient(45deg, var(--primary), var(--primary-dark));
+            color: var(--darker);
+            padding: 0.7rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            transition: var(--transition);
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .course-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 191, 255, 0.4);
+        }
+
+        .courses-navigation {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .nav-button {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: var(--gray);
+            color: var(--light);
+            border: 2px solid var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-button:hover {
+            background: var(--primary);
+            color: var(--darker);
+            transform: translateY(-3px);
+        }
+
+        .courses-progress {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .progress-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: var(--gray);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .progress-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
+        }
+
+        /* Course Stats */
+        .course-stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 4rem;
+            flex-wrap: wrap;
+            gap: 2rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 15px;
+            background: rgba(42, 42, 42, 0.5);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(0, 191, 255, 0.1);
+            transition: var(--transition);
+            min-width: 200px;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-10px);
+            border-color: rgba(0, 191, 255, 0.3);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: 1rem;
+        }
+
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--primary), #7fffd4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-text {
+            color: #cccccc;
+            font-size: 1rem;
+        }
+
+        /* Video Section */
+        .video-section {
+            padding: 5rem 0;
+        }
+
+        .video-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            justify-content: center;
+        }
+
+        .video-card {
+            width: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .video-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .video-thumbnail {
+            height: 180px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .video-thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .play-button {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 60px;
+            height: 60px;
+            background-color: rgba(0, 191, 255, 0.8);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .video-card:hover .play-button {
+            background-color: var(--primary);
+            transform: translate(-50%, -50%) scale(1.1);
+        }
+
+        .video-info {
+            padding: 1.5rem;
+        }
+
+        .video-info h3 {
+            font-size: 1.2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .video-info p {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+
+        /* Limited Time Offer Section */
+        .offer-section {
+            padding: 5rem 0;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .offer-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .offer-text {
+            flex: 1;
+        }
+
+        .offer-card {
+            flex: 1;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            padding: 2.5rem;
+            border-radius: 15px;
+            color: var(--darker);
+            box-shadow: var(--shadow-hover);
+            animation: pulse 2s infinite;
+        }
+
+        .offer-card h3 {
+            font-size: 1.8rem;
+            margin-bottom: 1rem;
+        }
+
+        .offer-card .price {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+        }
+
+        .offer-features {
+            list-style: none;
+            margin-bottom: 2rem;
+        }
+
+        .offer-features li {
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .offer-features i {
+            color: var(--darker);
+        }
+
+        .countdown {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .countdown-item {
+            background-color: var(--darker);
+            color: var(--light);
+            padding: 0.8rem;
+            border-radius: 8px;
+            text-align: center;
+            min-width: 70px;
+        }
+
+        .countdown-number {
+            font-size: 1.8rem;
+            font-weight: 700;
+            display: block;
+        }
+
+        .countdown-label {
+            font-size: 0.8rem;
+            opacity: 0.8;
+        }
+
+        /* Affiliate Section */
+        .affiliate {
+            padding: 5rem 0;
+        }
+
+        .affiliate-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .affiliate-text {
+            flex: 1;
+        }
+
+        .affiliate-image {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+        }
+
+        .affiliate-image img {
+            max-width: 100%;
+            border-radius: 15px;
+            box-shadow: var(--shadow-hover);
+        }
+
+        /* Testimonials Section */
+        .testimonials {
+            padding: 5rem 0;
+        }
+
+        .testimonials-content {
+            display: flex;
+            gap: 3rem;
+            align-items: center;
+        }
+
+        .testimonials-video {
+            flex: 1;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: var(--shadow-hover);
+        }
+
+        .testimonials-video iframe {
+            width: 100%;
+            height: 400px;
+            border: none;
+        }
+
+        .testimonials-scroll {
+            flex: 1;
+            height: 400px;
+            overflow-y: auto;
+            padding-right: 1rem;
+        }
+
+        .testimonials-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .testimonials-scroll::-webkit-scrollbar-track {
+            background: var(--gray);
+            border-radius: 10px;
+        }
+
+        .testimonials-scroll::-webkit-scrollbar-thumb {
+            background: var(--primary);
+            border-radius: 10px;
+        }
+
+        .testimonial-card {
+            padding: 2rem;
+            border-radius: 15px;
+            margin-bottom: 1.5rem;
+            transition: var(--transition);
+        }
+
+        .testimonial-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .testimonial-rating {
+            display: flex;
+            margin-bottom: 1rem;
+            gap: 0.2rem;
+        }
+
+        .star {
+            color: #ffc107;
+            font-size: 1.1rem;
+        }
+
+        .star.half {
+            position: relative;
+        }
+
+        .star.half::before {
+            content: '\f005';
+            position: absolute;
+            left: 0;
+            width: 50%;
+            overflow: hidden;
+            color: #ffc107;
+        }
+
+        .testimonial-text {
+            font-style: italic;
+            margin-bottom: 1.5rem;
+            color: #cccccc;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .author-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--darker);
+            font-weight: 700;
+        }
+
+        .author-info h4 {
+            font-size: 1.1rem;
+        }
+
+        .author-info p {
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+
+        /* Social Media Demos Section */
+        .social-demos {
+            padding: 5rem 0;
+        }
+
+        .social-tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 3rem;
+            gap: 1rem;
+        }
+
+        .social-tab {
+            background: transparent;
+            color: var(--light);
+            border: 2px solid var(--primary);
+            padding: 0.8rem 1.8rem;
+            border-radius: 30px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .social-tab:hover, .social-tab.active {
+            background-color: var(--primary);
+            color: var(--darker);
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .social-posts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .social-post {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+            background: rgba(42, 42, 42, 0.7);
+        }
+
+        .social-post:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            gap: 1rem;
+        }
+
+        .post-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--darker);
+            font-weight: 700;
+        }
+
+        .post-user {
+            flex: 1;
+        }
+
+        .post-user h4 {
+            font-size: 1rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .post-user p {
+            color: #aaaaaa;
+            font-size: 0.8rem;
+        }
+
+        .post-platform {
+            color: var(--primary);
+            font-size: 1.2rem;
+        }
+
+        .post-content {
+            padding: 0 1rem 1rem;
+        }
+
+        .post-text {
+            margin-bottom: 1rem;
+            color: #cccccc;
+        }
+
+        .post-image {
+            height: 200px;
+            border-radius: 10px;
+            overflow: hidden;
+            margin-bottom: 1rem;
+        }
+
+        .post-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .post-stats {
+            display: flex;
+            justify-content: space-between;
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+
+        .post-stat {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        /* Blog Section */
+        .blog {
+            padding: 5rem 0;
+        }
+
+        .blog-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+        }
+
+        .blog-card {
+            border-radius: 15px;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .blog-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .blog-image {
+            height: 200px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .blog-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: var(--transition-slow);
+        }
+
+        .blog-card:hover .blog-image img {
+            transform: scale(1.1);
+        }
+
+        .blog-content {
+            padding: 1.5rem;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+            color: var(--primary);
+        }
+
+        .blog-content h3 {
+            font-size: 1.3rem;
+            margin-bottom: 1rem;
+        }
+
+        .blog-content p {
+            color: #cccccc;
+            margin-bottom: 1.5rem;
+        }
+
+        .blog-link {
+            color: var(--primary);
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            transition: var(--transition);
+        }
+
+        .blog-link:hover {
+            gap: 10px;
+        }
+
+        /* CTA Section */
+        .cta-section {
+            padding: 5rem 0;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            text-align: center;
+            color: var(--darker);
+        }
+
+        .cta-section h2 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            max-width: 600px;
+            margin: 0 auto 2rem;
+        }
+
+        .cta-section .cta-button {
+            background-color: var(--darker);
+            color: var(--light);
+            border-color: var(--darker);
+        }
+
+        .cta-section .cta-button:hover {
+            background-color: transparent;
+            color: var(--darker);
+            border-color: var(--darker);
+        }
+
+        /* Footer */
+        footer {
+            padding: 3rem 0 1.5rem;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .footer-column h3 {
+            font-size: 1.2rem;
+            margin-bottom: 1.5rem;
+            color: var(--primary);
+        }
+
+        .footer-links {
+            list-style: none;
+        }
+
+        .footer-links li {
+            margin-bottom: 0.8rem;
+        }
+
+        .footer-links a {
+            color: #cccccc;
+            transition: var(--transition);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary);
+        }
+
+        .social-links {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .social-links a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--gray);
+            transition: var(--transition);
+        }
+
+        .social-links a:hover {
+            background-color: var(--primary);
+            color: var(--darker);
+            transform: translateY(-3px);
+        }
+
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid var(--gray);
+            color: #aaaaaa;
+            font-size: 0.9rem;
+        }
+
+        /* Responsive Styles */
+        @media (max-width: 992px) {
+            h1 {
+                font-size: 2.8rem;
+            }
+
+            .hero-content, .affiliate-content, .offer-content, .testimonials-content {
+                flex-direction: column;
+            }
+
+            .hero-text, .affiliate-text, .offer-text {
+                text-align: center;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+            }
+
+            .testimonials-scroll {
+                height: 300px;
+            }
+
+            .courses-grid {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+
+            .social-posts {
+                grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            }
+        }
+
+        @media (max-width: 768px) {
+            nav ul {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: block;
+            }
+
+            h1 {
+                font-size: 2.2rem;
+            }
+
+            .section-title h2 {
+                font-size: 2rem;
+            }
+
+            .courses .section-title h2 {
+                font-size: 2.5rem;
+            }
+
+            .courses-tabs {
+                gap: 0.5rem;
+            }
+
+            .tab-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+
+            .course-stats {
+                gap: 1rem;
+            }
+
+            .stat-item {
+                min-width: 150px;
+                padding: 1rem;
+            }
+
+            .stat-number {
+                font-size: 2rem;
+            }
+
+            .social-tabs {
+                flex-wrap: wrap;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .course-stats {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .stat-item {
+                width: 100%;
+                max-width: 250px;
+            }
+
+            .social-posts {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="bg-animation">
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+        <div class="bg-circle"></div>
+    </div>
+
+    <!-- Signature Circle -->
+    <div class="signature-circle">AIE</div>
+
+    <!-- Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-logo">
+            <div class="loading-logo-icon">
+                <i class="fas fa-robot"></i>
+            </div>
+            <div class="loading-logo-text">AIE</div>
+        </div>
+        <div class="loading-bar">
+            <div class="loading-progress" id="loadingProgress"></div>
+        </div>
+        <div class="loading-text">Loading AI Entertainment...</div>
+    </div>
+
+    <!-- Header -->
+    <header class="glass">
+        <div class="container">
+            <div class="header-content">
+                <div class="logo">
+                    <div class="logo-icon">
+                        <i class="fas fa-robot"></i>
+                    </div>
+                    <div class="logo-text">AIE</div>
+                </div>
+                <nav>
+                    <ul>
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Courses</a></li>
+                        <li><a href="#">Tools</a></li>
+                        <li><a href="#">Affiliate</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">Blog</a></li>
+                    </ul>
+                </nav>
+                <div class="header-actions">
+                    <a href="#" class="cta-button">Get Started</a>
+                </div>
+                <div class="mobile-menu">
+                    <i class="fas fa-bars"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Create, Build & Deploy <span class="highlight">AI Influencers</span></h1>
+                    <p>Master the art of creating digital personalities using cutting-edge AI technology. Join our ecosystem to learn, build, and monetize AI influencers across all platforms.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="cta-button">Start Learning Now</a>
+                        <a href="#" class="secondary-button">View Courses</a>
+                    </div>
+                </div>
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Influencer">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Logo Ticker -->
+    <section class="logo-ticker">
+        <div class="ticker-container">
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-nvidia"></i></div>
+                <div class="ticker-text">NVIDIA</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-google"></i></div>
+                <div class="ticker-text">Google AI</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-microsoft"></i></div>
+                <div class="ticker-text">Microsoft</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-meta"></i></div>
+                <div class="ticker-text">Meta AI</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-openai"></i></div>
+                <div class="ticker-text">OpenAI</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-stability-ai"></i></div>
+                <div class="ticker-text">Stability AI</div>
+            </div>
+            <!-- Duplicate for seamless loop -->
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-nvidia"></i></div>
+                <div class="ticker-text">NVIDIA</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-google"></i></div>
+                <div class="ticker-text">Google AI</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-microsoft"></i></div>
+                <div class="ticker-text">Microsoft</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-meta"></i></div>
+                <div class="ticker-text">Meta AI</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-openai"></i></div>
+                <div class="ticker-text">OpenAI</div>
+            </div>
+            <div class="ticker-item">
+                <div class="ticker-icon"><i class="fab fa-stability-ai"></i></div>
+                <div class="ticker-text">Stability AI</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-title">
+                <h2>Why Choose Our Platform</h2>
+                <p>We provide a complete ecosystem for creating and monetizing AI influencers</p>
+            </div>
+            <div class="features-grid">
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3>Comprehensive Learning</h3>
+                    <p>Step-by-step courses covering everything from AI basics to advanced influencer deployment strategies.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-tools"></i>
+                    </div>
+                    <h3>Powerful Tools</h3>
+                    <p>Access to cutting-edge AI tools and platforms to create realistic and engaging digital personalities.</p>
+                </div>
+                <div class="feature-card glass">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3>Monetization Strategies</h3>
+                    <p>Learn how to monetize your AI influencers through affiliate marketing, sponsorships, and more.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Enhanced Courses Section -->
+    <section class="courses">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured Courses</h2>
+                <p>Master the art of creating AI influencers with our comprehensive curriculum</p>
+                <div class="section-decoration"></div>
+            </div>
+
+            <div class="courses-tabs">
+                <button class="tab-button active" data-category="all">All Courses</button>
+                <button class="tab-button" data-category="beginner">Beginner</button>
+                <button class="tab-button" data-category="intermediate">Intermediate</button>
+                <button class="tab-button" data-category="advanced">Advanced</button>
+                <button class="tab-button" data-category="monetization">Monetization</button>
+            </div>
+
+            <div class="courses-container">
+                <div class="courses-grid">
+                    <!-- Course 1 -->
+                    <div class="course-card glass visible" data-category="beginner">
+                        <div class="course-badge">BESTSELLER</div>
+                        <div class="course-image">
+                            <img src="https://images.unsplash.com/photo-1555949963-aa79dcee981c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Basics">
+                            <div class="course-overlay">
+                                <div class="course-level">BEGINNER</div>
+                            </div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category">
+                                <i class="fas fa-robot"></i> AI Fundamentals
+                            </div>
+                            <h3>AI Influencer Creation Masterclass</h3>
+                            <p>Learn the complete process of creating realistic AI influencers from scratch using the latest tools and techniques.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 6 weeks</span>
+                                <span><i class="fas fa-film"></i> 42 lessons</span>
+                                <span><i class="fas fa-user-graduate"></i> 2.4k students</span>
+                            </div>
+                            <div class="course-footer">
+                                <div class="course-price">$97 <s>$197</s></div>
+                                <button class="course-button">Enroll Now <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 2 -->
+                    <div class="course-card glass visible" data-category="intermediate">
+                        <div class="course-badge">POPULAR</div>
+                        <div class="course-image">
+                            <img src="https://images.unsplash.com/photo-1677442135337-6b5f64b45371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Advanced AI">
+                            <div class="course-overlay">
+                                <div class="course-level">INTERMEDIATE</div>
+                            </div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category">
+                                <i class="fas fa-rocket"></i> Advanced Techniques
+                            </div>
+                            <h3>Advanced AI Deployment Strategies</h3>
+                            <p>Master deployment across multiple platforms and learn advanced techniques for realistic AI behavior.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 8 weeks</span>
+                                <span><i class="fas fa-film"></i> 56 lessons</span>
+                                <span><i class="fas fa-user-graduate"></i> 1.8k students</span>
+                            </div>
+                            <div class="course-footer">
+                                <div class="course-price">$147 <s>$247</s></div>
+                                <button class="course-button">Enroll Now <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 3 -->
+                    <div class="course-card glass visible" data-category="monetization">
+                        <div class="course-badge">HOT</div>
+                        <div class="course-image">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Monetization">
+                            <div class="course-overlay">
+                                <div class="course-level">ALL LEVELS</div>
+                            </div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category">
+                                <i class="fas fa-dollar-sign"></i> Revenue Generation
+                            </div>
+                            <h3>AI Influencer Monetization Mastery</h3>
+                            <p>Discover proven strategies to generate income through affiliate marketing, sponsorships, and brand deals.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 4 weeks</span>
+                                <span><i class="fas fa-film"></i> 32 lessons</span>
+                                <span><i class="fas fa-user-graduate"></i> 3.1k students</span>
+                            </div>
+                            <div class="course-footer">
+                                <div class="course-price">$127 <s>$227</s></div>
+                                <button class="course-button">Enroll Now <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 4 -->
+                    <div class="course-card glass visible" data-category="advanced">
+                        <div class="course-badge">NEW</div>
+                        <div class="course-image">
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Personality">
+                            <div class="course-overlay">
+                                <div class="course-level">ADVANCED</div>
+                            </div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category">
+                                <i class="fas fa-brain"></i> Advanced AI
+                            </div>
+                            <h3>Creating Dynamic AI Personalities</h3>
+                            <p>Learn to develop AI influencers with unique personalities, emotions, and adaptive behaviors.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 10 weeks</span>
+                                <span><i class="fas fa-film"></i> 68 lessons</span>
+                                <span><i class="fas fa-user-graduate"></i> 890 students</span>
+                            </div>
+                            <div class="course-footer">
+                                <div class="course-price">$197 <s>$297</s></div>
+                                <button class="course-button">Enroll Now <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 5 -->
+                    <div class="course-card glass visible" data-category="beginner">
+                        <div class="course-image">
+                            <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Tools">
+                            <div class="course-overlay">
+                                <div class="course-level">BEGINNER</div>
+                            </div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category">
+                                <i class="fas fa-tools"></i> Essential Tools
+                            </div>
+                            <h3>AI Tools & Platforms Mastery</h3>
+                            <p>Get hands-on experience with the most powerful AI tools and platforms for creating digital personalities.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 5 weeks</span>
+                                <span><i class="fas fa-film"></i> 38 lessons</span>
+                                <span><i class="fas fa-user-graduate"></i> 1.5k students</span>
+                            </div>
+                            <div class="course-footer">
+                                <div class="course-price">$87 <s>$167</s></div>
+                                <button class="course-button">Enroll Now <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Course 6 -->
+                    <div class="course-card glass visible" data-category="monetization">
+                        <div class="course-badge">TRENDING</div>
+                        <div class="course-image">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Affiliate Marketing">
+                            <div class="course-overlay">
+                                <div class="course-level">INTERMEDIATE</div>
+                            </div>
+                        </div>
+                        <div class="course-content">
+                            <div class="course-category">
+                                <i class="fas fa-chart-line"></i> Marketing
+                            </div>
+                            <h3>Affiliate Marketing for AI Influencers</h3>
+                            <p>Maximize your earnings with proven affiliate marketing strategies tailored for AI influencers.</p>
+                            <div class="course-meta">
+                                <span><i class="far fa-clock"></i> 6 weeks</span>
+                                <span><i class="fas fa-film"></i> 45 lessons</span>
+                                <span><i class="fas fa-user-graduate"></i> 2.2k students</span>
+                            </div>
+                            <div class="course-footer">
+                                <div class="course-price">$117 <s>$217</s></div>
+                                <button class="course-button">Enroll Now <i class="fas fa-arrow-right"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="courses-navigation">
+                    <div class="nav-button prev">
+                        <i class="fas fa-chevron-left"></i>
+                    </div>
+                    <div class="nav-button next">
+                        <i class="fas fa-chevron-right"></i>
+                    </div>
+                </div>
+
+                <div class="courses-progress">
+                    <div class="progress-dot active"></div>
+                    <div class="progress-dot"></div>
+                    <div class="progress-dot"></div>
+                </div>
+            </div>
+
+            <div class="course-stats">
+                <div class="stat-item glass">
+                    <div class="stat-icon">
+                        <i class="fas fa-user-graduate"></i>
+                    </div>
+                    <div class="stat-number">12K+</div>
+                    <div class="stat-text">Students Enrolled</div>
+                </div>
+                <div class="stat-item glass">
+                    <div class="stat-icon">
+                        <i class="fas fa-play-circle"></i>
+                    </div>
+                    <div class="stat-number">280+</div>
+                    <div class="stat-text">Course Lessons</div>
+                </div>
+                <div class="stat-item glass">
+                    <div class="stat-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <div class="stat-number">94%</div>
+                    <div class="stat-text">Success Rate</div>
+                </div>
+                <div class="stat-item glass">
+                    <div class="stat-icon">
+                        <i class="fas fa-award"></i>
+                    </div>
+                    <div class="stat-number">15</div>
+                    <div class="stat-text">Expert Instructors</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Media Demos Section -->
+    <section class="social-demos">
+        <div class="container">
+            <div class="section-title">
+                <h2>AI Influencer Success Stories</h2>
+                <p>See how our students are creating engaging content with AI influencers</p>
+            </div>
+            
+            <div class="social-tabs">
+                <button class="social-tab active" data-platform="all">
+                    <i class="fas fa-globe"></i> All Platforms
+                </button>
+                <button class="social-tab" data-platform="instagram">
+                    <i class="fab fa-instagram"></i> Instagram
+                </button>
+                <button class="social-tab" data-platform="facebook">
+                    <i class="fab fa-facebook"></i> Facebook
+                </button>
+                <button class="social-tab" data-platform="tiktok">
+                    <i class="fab fa-tiktok"></i> TikTok
+                </button>
+            </div>
+            
+            <div class="social-posts">
+                <!-- Instagram Post 1 -->
+                <div class="social-post glass" data-platform="instagram">
+                    <div class="post-header">
+                        <div class="post-avatar">AI</div>
+                        <div class="post-user">
+                            <h4>AI_Adventures</h4>
+                            <p>Sponsored by AIE</p>
+                        </div>
+                        <div class="post-platform">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="post-text">
+                            Just launched my new AI influencer! The engagement has been incredible. Thanks to AIE for the amazing training! #AIInfluencer #DigitalCreator
+                        </div>
+                        <div class="post-image">
+                            <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Influencer Post">
+                        </div>
+                        <div class="post-stats">
+                            <div class="post-stat">
+                                <i class="far fa-heart"></i> 2.4K
+                            </div>
+                            <div class="post-stat">
+                                <i class="far fa-comment"></i> 187
+                            </div>
+                            <div class="post-stat">
+                                <i class="far fa-share-square"></i> 42
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Facebook Post -->
+                <div class="social-post glass" data-platform="facebook">
+                    <div class="post-header">
+                        <div class="post-avatar">DT</div>
+                        <div class="post-user">
+                            <h4>Digital Trends AI</h4>
+                            <p>Sponsored · Following AIE</p>
+                        </div>
+                        <div class="post-platform">
+                            <i class="fab fa-facebook"></i>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="post-text">
+                            Our AI influencer campaign generated over $5,000 in affiliate revenue last month! The AIE monetization strategies really work!
+                        </div>
+                        <div class="post-image">
+                            <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Facebook Post">
+                        </div>
+                        <div class="post-stats">
+                            <div class="post-stat">
+                                <i class="far fa-thumbs-up"></i> 1.2K
+                            </div>
+                            <div class="post-stat">
+                                <i class="far fa-comment"></i> 89
+                            </div>
+                            <div class="post-stat">
+                                <i class="far fa-share"></i> 156
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Instagram Post 2 -->
+                <div class="social-post glass" data-platform="instagram">
+                    <div class="post-header">
+                        <div class="post-avatar">TC</div>
+                        <div class="post-user">
+                            <h4>TechCreators AI</h4>
+                            <p>Sponsored by AIE</p>
+                        </div>
+                        <div class="post-platform">
+                            <i class="fab fa-instagram"></i>
+                        </div>
+                    </div>
+                    <div class="post-content">
+                        <div class="post-text">
+                            From zero to 10K followers in 30 days with my AI influencer! The engagement algorithms taught in the AIE courses are game-changing!
+                        </div>
+                        <div class="post-image">
+                            <img src="https://images.unsplash.com/photo-1677442135337-6b5f64b45371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Instagram Post">
+                        </div>
+                        <div class="post-stats">
+                            <div class="post-stat">
+                                <i class="far fa-heart"></i> 3.1K
+                            </div>
+                            <div class="post-stat">
+                                <i class="far fa-comment"></i> 243
+                            </div>
+                            <div class="post-stat">
+                                <i class="far fa-share-square"></i> 67
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Section -->
+    <section class="video-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured Videos</h2>
+                <p>Watch our tutorials and success stories</p>
+            </div>
+            <div class="video-container">
+                <div class="video-card glass">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1611224923853-80b023f02d71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Video 1">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Creating Your First AI Influencer</h3>
+                        <p>Learn the basics of AI influencer creation in this step-by-step tutorial.</p>
+                    </div>
+                </div>
+                <div class="video-card glass">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Video 2">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Monetization Strategies for AI Influencers</h3>
+                        <p>Discover how to generate income with your AI creations.</p>
+                    </div>
+                </div>
+                <div class="video-card glass">
+                    <div class="video-thumbnail">
+                        <img src="https://images.unsplash.com/photo-1677442135337-6b5f64b45371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Video 3">
+                        <div class="play-button">
+                            <i class="fas fa-play"></i>
+                        </div>
+                    </div>
+                    <div class="video-info">
+                        <h3>Advanced AI Deployment Techniques</h3>
+                        <p>Take your AI influencers to the next level with these advanced strategies.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Limited Time Offer Section -->
+    <section class="offer-section">
+        <div class="container">
+            <div class="section-title">
+                <h2>Limited Time Offer</h2>
+                <p>Get our premium plan at a special discounted price</p>
+            </div>
+            <div class="offer-content">
+                <div class="offer-text">
+                    <h2>Premium AI Creator Plan</h2>
+                    <p>This exclusive package includes everything you need to become a successful AI influencer creator. Don't miss this opportunity to join our elite community at a fraction of the regular price.</p>
+                    <div class="countdown" id="countdown">
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="days">07</span>
+                            <span class="countdown-label">Days</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="hours">23</span>
+                            <span class="countdown-label">Hours</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="minutes">59</span>
+                            <span class="countdown-label">Minutes</span>
+                        </div>
+                        <div class="countdown-item">
+                            <span class="countdown-number" id="seconds">59</span>
+                            <span class="countdown-label">Seconds</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="offer-card">
+                    <h3>Premium Plan</h3>
+                    <div class="price">$297 <span style="font-size: 1.5rem; text-decoration: line-through; opacity: 0.7;">$597</span></div>
+                    <ul class="offer-features">
+                        <li><i class="fas fa-check"></i> All Course Access</li>
+                        <li><i class="fas fa-check"></i> Premium AI Tools</li>
+                        <li><i class="fas fa-check"></i> One-on-One Mentoring</li>
+                        <li><i class="fas fa-check"></i> Exclusive Community Access</li>
+                        <li><i class="fas fa-check"></i> Affiliate Program with 40% Commission</li>
+                        <li><i class="fas fa-check"></i> Lifetime Updates</li>
+                    </ul>
+                    <a href="#" class="cta-button" style="display: block; text-align: center;">Get Premium Access</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Affiliate Section -->
+    <section class="affiliate">
+        <div class="container">
+            <div class="affiliate-content">
+                <div class="affiliate-text">
+                    <h2>Monetize with Our <span class="highlight">Affiliate Program</span></h2>
+                    <p>Join our affiliate program and earn commissions by promoting our courses and tools. We provide all the resources you need to succeed, including banners, links, and promotional materials.</p>
+                    <p>Our ecosystem is designed to help you maximize your earnings while building your own AI influencer business.</p>
+                    <a href="#" class="cta-button">Join Affiliate Program</a>
+                </div>
+                <div class="affiliate-image">
+                    <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Affiliate Marketing">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-title">
+                <h2>Success Stories</h2>
+                <p>See what our students have achieved with our platform</p>
+            </div>
+            <div class="testimonials-content">
+                <div class="testimonials-video glass">
+                    <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ" title="Testimonial Video" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+                <div class="testimonials-scroll">
+                    <div class="testimonial-card glass">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "This platform completely transformed how I approach digital marketing. My AI influencer now generates consistent income through affiliate partnerships. The step-by-step guidance made it so easy to get started!"
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">JS</div>
+                            <div class="author-info">
+                                <h4>Jamie Smith</h4>
+                                <p>Digital Creator</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star-half-alt star half"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "The courses are incredibly detailed and the tools provided are industry-leading. I went from zero knowledge to deploying my first AI influencer in just 2 months. The community support is amazing!"
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">AR</div>
+                            <div class="author-info">
+                                <h4>Alex Rodriguez</h4>
+                                <p>Content Strategist</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "The affiliate program alone has paid for my course subscription multiple times over. This is by far the best investment I've made in my digital career. The ROI is incredible!"
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">MP</div>
+                            <div class="author-info">
+                                <h4>Maya Patel</h4>
+                                <p>Influencer Manager</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="testimonial-card glass">
+                        <div class="testimonial-rating">
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                            <i class="fas fa-star star"></i>
+                        </div>
+                        <div class="testimonial-text">
+                            "I was skeptical at first, but the results speak for themselves. My AI influencer now has over 50K followers and is generating passive income. The training is worth every penny!"
+                        </div>
+                        <div class="testimonial-author">
+                            <div class="author-avatar">TK</div>
+                            <div class="author-info">
+                                <h4>Taylor Kim</h4>
+                                <p>Social Media Manager</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Blog Section -->
+    <section class="blog">
+        <div class="container">
+            <div class="section-title">
+                <h2>Latest from Our Blog</h2>
+                <p>Stay updated with the latest trends in AI and influencer marketing</p>
+            </div>
+            <div class="blog-grid">
+                <div class="blog-card glass">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Blog Post 1">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> June 15, 2023</span>
+                            <span><i class="far fa-user"></i> Admin</span>
+                        </div>
+                        <h3>The Future of AI Influencers in Digital Marketing</h3>
+                        <p>Discover how AI influencers are reshaping the digital marketing landscape and what it means for content creators.</p>
+                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="blog-card glass">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1677442135337-6b5f64b45371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Blog Post 2">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> June 10, 2023</span>
+                            <span><i class="far fa-user"></i> Admin</span>
+                        </div>
+                        <h3>Top 5 AI Tools for Creating Digital Personalities</h3>
+                        <p>Explore the best AI tools available today for creating realistic and engaging digital personalities.</p>
+                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+                <div class="blog-card glass">
+                    <div class="blog-image">
+                        <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Blog Post 3">
+                    </div>
+                    <div class="blog-content">
+                        <div class="blog-meta">
+                            <span><i class="far fa-calendar"></i> June 5, 2023</span>
+                            <span><i class="far fa-user"></i> Admin</span>
+                        </div>
+                        <h3>Monetizing Your AI Influencer: A Complete Guide</h3>
+                        <p>Learn proven strategies to monetize your AI influencer through various revenue streams.</p>
+                        <a href="#" class="blog-link">Read More <i class="fas fa-arrow-right"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section">
+        <div class="container">
+            <h2>Ready to Create Your AI Influencer?</h2>
+            <p>Join thousands of creators who are already building and monetizing AI influencers. Start your journey today and be part of the future of digital content.</p>
+            <a href="#" class="cta-button">Enroll Now</a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="glass">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>AIE - Ai Entertainment</h3>
+                    <p>Your complete ecosystem for learning, building, and deploying AI influencers across all platforms.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                    </div>
+                </div>
+                <div class="footer-column">
+                    <h3>Quick Links</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Home</a></li>
+                        <li><a href="#">Courses</a></li>
+                        <li><a href="#">Pricing</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="#">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Resources</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Documentation</a></li>
+                        <li><a href="#">Tutorials</a></li>
+                        <li><a href="#">Tools</a></li>
+                        <li><a href="#">Community</a></li>
+                        <li><a href="#">Affiliate Program</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Support</h3>
+                    <ul class="footer-links">
+                        <li><a href="#">Help Center</a></li>
+                        <li><a href="#">FAQs</a></li>
+                        <li><a href="#">Privacy Policy</a></li>
+                        <li><a href="#">Terms of Service</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 AIE - Ai Entertainment. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Loading Screen Animation
+        document.addEventListener('DOMContentLoaded', function() {
+            const loadingScreen = document.getElementById('loadingScreen');
+            const loadingProgress = document.getElementById('loadingProgress');
+            
+            let progress = 0;
+            const interval = setInterval(() => {
+                progress += Math.random() * 10;
+                if (progress >= 100) {
+                    progress = 100;
+                    clearInterval(interval);
+                    setTimeout(() => {
+                        loadingScreen.style.opacity = '0';
+                        setTimeout(() => {
+                            loadingScreen.style.display = 'none';
+                        }, 500);
+                    }, 500);
+                }
+                loadingProgress.style.width = `${progress}%`;
+            }, 200);
+            
+            // Countdown Timer
+            const countdownDate = new Date();
+            countdownDate.setDate(countdownDate.getDate() + 7);
+            
+            function updateCountdown() {
+                const now = new Date().getTime();
+                const distance = countdownDate - now;
+                
+                const days = Math.floor(distance / (1000 * 60 * 60 * 24));
+                const hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+                const minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((distance % (1000 * 60)) / 1000);
+                
+                document.getElementById('days').textContent = days.toString().padStart(2, '0');
+                document.getElementById('hours').textContent = hours.toString().padStart(2, '0');
+                document.getElementById('minutes').textContent = minutes.toString().padStart(2, '0');
+                document.getElementById('seconds').textContent = seconds.toString().padStart(2, '0');
+            }
+            
+            updateCountdown();
+            setInterval(updateCountdown, 1000);
+            
+            // Scroll Animations
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('visible');
+                    }
+                });
+            }, observerOptions);
+            
+            document.querySelectorAll('.feature-card, .course-card, .testimonial-card, .social-post').forEach(el => {
+                observer.observe(el);
+            });
+            
+            // Mobile Menu Toggle
+            document.querySelector('.mobile-menu').addEventListener('click', function() {
+                const nav = document.querySelector('nav ul');
+                nav.style.display = nav.style.display === 'flex' ? 'none' : 'flex';
+            });
+            
+            // Tab filtering functionality
+            const tabButtons = document.querySelectorAll('.tab-button');
+            const courseCards = document.querySelectorAll('.course-card');
+            
+            tabButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    tabButtons.forEach(btn => btn.classList.remove('active'));
+                    
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const category = this.getAttribute('data-category');
+                    
+                    // Show/hide courses based on category
+                    courseCards.forEach(card => {
+                        if (category === 'all' || card.getAttribute('data-category') === category) {
+                            card.style.display = 'block';
+                            setTimeout(() => {
+                                card.classList.add('visible');
+                            }, 50);
+                        } else {
+                            card.classList.remove('visible');
+                            setTimeout(() => {
+                                card.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+            
+            // Course card animation on scroll
+            document.querySelectorAll('.course-card').forEach(card => {
+                observer.observe(card);
+            });
+            
+            // Navigation buttons (simulated functionality)
+            const prevButton = document.querySelector('.nav-button.prev');
+            const nextButton = document.querySelector('.nav-button.next');
+            const progressDots = document.querySelectorAll('.progress-dot');
+            let currentSlide = 0;
+            
+            function updateNavigation() {
+                progressDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentSlide);
+                });
+            }
+            
+            prevButton.addEventListener('click', function() {
+                currentSlide = currentSlide > 0 ? currentSlide - 1 : progressDots.length - 1;
+                updateNavigation();
+            });
+            
+            nextButton.addEventListener('click', function() {
+                currentSlide = currentSlide < progressDots.length - 1 ? currentSlide + 1 : 0;
+                updateNavigation();
+            });
+            
+            progressDots.forEach((dot, index) => {
+                dot.addEventListener('click', function() {
+                    currentSlide = index;
+                    updateNavigation();
+                });
+            });
+            
+            // Add hover effect to course cards
+            courseCards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.zIndex = '10';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.zIndex = '1';
+                });
+            });
+            
+            // Social Media Tabs
+            const socialTabs = document.querySelectorAll('.social-tab');
+            const socialPosts = document.querySelectorAll('.social-post');
+            
+            socialTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs
+                    socialTabs.forEach(t => t.classList.remove('active'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    const platform = this.getAttribute('data-platform');
+                    
+                    // Show/hide posts based on platform
+                    socialPosts.forEach(post => {
+                        if (platform === 'all' || post.getAttribute('data-platform') === platform) {
+                            post.style.display = 'block';
+                            setTimeout(() => {
+                                post.classList.add('visible');
+                            }, 50);
+                        } else {
+                            post.classList.remove('visible');
+                            setTimeout(() => {
+                                post.style.display = 'none';
+                            }, 300);
+                        }
+                    });
+                });
+            });
+        });
+    </script>
+</body>
+</html>

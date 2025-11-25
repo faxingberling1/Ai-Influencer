@@ -1,0 +1,14 @@
+# Ignore all env files
+.env
+.env.*
+*.env
+.env.production
+
+# Backend
+backend/.env
+backend/.env.production
+
+# Frontend envs
+frontend/.env
+frontend/.env.local
+frontend/.env.production
