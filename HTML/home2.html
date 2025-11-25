@@ -311,6 +311,8 @@
             font-weight: 600;
             transition: var(--transition);
             border: 2px solid var(--primary);
+            display: inline-block;
+            text-align: center;
         }
 
         .cta-button:hover {
@@ -392,10 +394,76 @@
             animation: fadeInRight 1s ease;
         }
 
-        .hero-image img {
-            max-width: 100%;
+        .hero-carousel {
+            width: 100%;
+            height: 400px;
             border-radius: 15px;
+            overflow: hidden;
+            position: relative;
             box-shadow: var(--shadow-hover);
+        }
+
+        .carousel-track {
+            display: flex;
+            width: 300%;
+            height: 100%;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide {
+            width: 33.333%;
+            height: 100%;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .carousel-slide img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+
+        .carousel-slide:hover img {
+            transform: scale(1.05);
+        }
+
+        .carousel-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            padding: 2rem;
+            background: linear-gradient(to top, rgba(10, 10, 10, 0.9), transparent);
+            color: var(--light);
+        }
+
+        .carousel-overlay h3 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .carousel-nav {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+        }
+
+        .carousel-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.5);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .carousel-dot.active {
+            background: var(--primary);
+            transform: scale(1.2);
         }
 
         h1 {
@@ -427,6 +495,8 @@
             font-weight: 600;
             transition: var(--transition);
             border: 2px solid var(--primary);
+            display: inline-block;
+            text-align: center;
         }
 
         .secondary-button:hover {
@@ -1042,6 +1112,16 @@
             max-width: 100%;
             border-radius: 15px;
             box-shadow: var(--shadow-hover);
+            transition: var(--transition);
+        }
+
+        .affiliate-image:hover img {
+            transform: scale(1.03);
+        }
+
+        .affiliate-button {
+            margin-top: 1.5rem;
+            display: inline-block;
         }
 
         /* Testimonials Section */
@@ -1481,6 +1561,10 @@
             .social-posts {
                 grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             }
+
+            .hero-carousel {
+                height: 350px;
+            }
         }
 
         @media (max-width: 768px) {
@@ -1529,6 +1613,10 @@
             .social-tabs {
                 flex-wrap: wrap;
             }
+
+            .hero-carousel {
+                height: 300px;
+            }
         }
 
         @media (max-width: 480px) {
@@ -1548,6 +1636,10 @@
 
             .social-posts {
                 grid-template-columns: 1fr;
+            }
+
+            .hero-carousel {
+                height: 250px;
             }
         }
     </style>
@@ -1621,7 +1713,36 @@
                     </div>
                 </div>
                 <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Influencer">
+                    <div class="hero-carousel">
+                        <div class="carousel-track" id="carouselTrack">
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1677442136019-21780ecad995?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Influencer">
+                                <div class="carousel-overlay">
+                                    <h3>Create Realistic AI Personalities</h3>
+                                    <p>Advanced tools for lifelike digital influencers</p>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1677442135337-6b5f64b45371?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="AI Technology">
+                                <div class="carousel-overlay">
+                                    <h3>Cutting-Edge AI Technology</h3>
+                                    <p>Leverage the latest advancements in artificial intelligence</p>
+                                </div>
+                            </div>
+                            <div class="carousel-slide">
+                                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Monetization">
+                                <div class="carousel-overlay">
+                                    <h3>Monetize Your Creations</h3>
+                                    <p>Generate income through multiple revenue streams</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="carousel-nav">
+                            <div class="carousel-dot active" data-slide="0"></div>
+                            <div class="carousel-dot" data-slide="1"></div>
+                            <div class="carousel-dot" data-slide="2"></div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2174,7 +2295,7 @@
                     <h2>Monetize with Our <span class="highlight">Affiliate Program</span></h2>
                     <p>Join our affiliate program and earn commissions by promoting our courses and tools. We provide all the resources you need to succeed, including banners, links, and promotional materials.</p>
                     <p>Our ecosystem is designed to help you maximize your earnings while building your own AI influencer business.</p>
-                    <a href="#" class="cta-button">Join Affiliate Program</a>
+                    <a href="#" class="cta-button affiliate-button">Join Affiliate Program</a>
                 </div>
                 <div class="affiliate-image">
                     <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80" alt="Affiliate Marketing">
@@ -2563,6 +2684,32 @@
                     });
                 });
             });
+            
+            // Hero Carousel
+            const carouselTrack = document.getElementById('carouselTrack');
+            const carouselDots = document.querySelectorAll('.carousel-dot');
+            let currentCarouselSlide = 0;
+            
+            function updateCarousel() {
+                carouselTrack.style.transform = `translateX(-${currentCarouselSlide * 33.333}%)`;
+                
+                carouselDots.forEach((dot, index) => {
+                    dot.classList.toggle('active', index === currentCarouselSlide);
+                });
+            }
+            
+            carouselDots.forEach((dot, index) => {
+                dot.addEventListener('click', function() {
+                    currentCarouselSlide = index;
+                    updateCarousel();
+                });
+            });
+            
+            // Auto-advance carousel
+            setInterval(() => {
+                currentCarouselSlide = (currentCarouselSlide + 1) % 3;
+                updateCarousel();
+            }, 5000);
         });
     </script>
 </body>
